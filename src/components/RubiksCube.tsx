@@ -3,7 +3,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState, useEffect, useMemo } from 'react';
 import { ThreeElements } from '@react-three/fiber';
 import { Move, CubeMode, INITIAL_CUBE_STATE, CubeBlock, CubeState, CUBE_COLORS } from '@/types/cube';
-import { Mesh, Group, BoxGeometry, MeshStandardMaterial } from 'three';
+import { Mesh, Group, BoxGeometry, MeshStandardMaterial, DoubleSide } from 'three';
 
 interface RubiksCubeProps {
   mode?: CubeMode;
@@ -16,11 +16,16 @@ interface RubiksCubeRef {
 }
 
 const createMaterial = (color: string) => {
+  const isHidden = color === CUBE_COLORS.hidden;
   return new MeshStandardMaterial({
     color,
-    roughness: 0.2,
-    metalness: 0.1,
-    emissive: color === CUBE_COLORS.hidden ? 0x000000 : 0x111111,
+    roughness: isHidden ? 0.9 : 0.2,
+    metalness: isHidden ? 0 : 0.1,
+    emissive: isHidden ? 0x000000 : color,
+    emissiveIntensity: isHidden ? 0 : 0.1,
+    transparent: isHidden,
+    opacity: isHidden ? 0.15 : 1,
+    side: DoubleSide,
   });
 };
 
