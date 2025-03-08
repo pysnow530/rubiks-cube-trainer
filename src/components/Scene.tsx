@@ -5,14 +5,8 @@ import { OrbitControls } from '@react-three/drei';
 import { RubiksCube } from './RubiksCube';
 import { Controls } from './Controls';
 import { Move } from '@/types/cube';
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { useCubeStore } from '@/store/cubeStore';
-
-type CubeRef = {
-  rotatePieces: (move: Move) => void;
-  scrambleCube: () => void;
-  resetCube: () => void;
-};
 
 interface SceneProps {
   showControls?: boolean;
@@ -21,14 +15,13 @@ interface SceneProps {
 }
 
 export const Scene = ({ showControls = true, showCube = true, isMain = false }: SceneProps) => {
-  const cubeRef = useRef<CubeRef>(null);
-  const { cubeRef: sharedCubeRef, setCubeRef } = useCubeStore();
+  const cubeRef = useRef<{
+    rotatePieces: (move: Move) => void;
+    scrambleCube: () => void;
+    resetCube: () => void;
+  }>(null);
 
-  useEffect(() => {
-    if (isMain && cubeRef.current) {
-      setCubeRef(cubeRef as any);
-    }
-  }, [isMain, setCubeRef]);
+  const { cubeRef: sharedCubeRef } = useCubeStore();
 
   const handleMove = (move: Move) => {
     if (isMain) {
@@ -56,6 +49,15 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
 
   return (
     <div className="relative w-full h-full">
+      {showControls && (
+        <div className="absolute top-4 right-4 z-10">
+          <Controls
+            onMove={handleMove}
+            onScramble={handleScramble}
+            onReset={handleReset}
+          />
+        </div>
+      )}
       {showCube && (
         <Canvas 
           camera={{ 
@@ -63,11 +65,12 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
             fov: 45,
             up: [0, 1, 0],
           }}
+          className="absolute inset-0"
         >
           <ambientLight intensity={0.7} />
           <pointLight position={[10, 10, 10]} intensity={0.5} />
           <pointLight position={[-10, -10, -10]} intensity={0.5} />
-          <RubiksCube ref={cubeRef} />
+          <RubiksCube ref={cubeRef} mode="cross" />
           <OrbitControls 
             enableZoom={true} 
             enablePan={false}
@@ -77,15 +80,6 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
             makeDefault
           />
         </Canvas>
-      )}
-      {showControls && (
-        <div className="absolute top-4 left-4">
-          <Controls
-            onMove={handleMove}
-            onScramble={handleScramble}
-            onReset={handleReset}
-          />
-        </div>
       )}
     </div>
   );
