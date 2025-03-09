@@ -1,4 +1,4 @@
-import { Move, CubeState, CubeBlock, CubeColors } from '@/types/cube';
+import { Move, CubeState, CubeBlock, CubeColors, TWO_MOVES, TO_ONE_MOVE } from '@/types/cube';
 
 // 根据移动类型获取需要旋转的块
 export const getAffectedBlocks = (state: CubeState, move: Move): CubeBlock[] => {
@@ -100,6 +100,12 @@ export const rotateColors = (colors: CubeColors, move: Move): CubeColors => {
 
 // 应用移动到魔方状态
 export const applyMove = (state: CubeState, move: Move): CubeState => {
+  // 处理 2 系列动作（如 U2, D2 等）
+  if (TWO_MOVES.includes(move)) {
+    const oneMove = TO_ONE_MOVE[move as keyof typeof TO_ONE_MOVE];
+    return applyMove(applyMove(state, oneMove), oneMove);
+  }
+
   const newState = JSON.parse(JSON.stringify(state)) as CubeState;
   const affectedBlocks = getAffectedBlocks(state, move);
   

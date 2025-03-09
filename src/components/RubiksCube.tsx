@@ -101,16 +101,20 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
     const numMoves = 20;
     
     setCubeState(() => {
-      // 这个函数在开发模式下会被调用两次，这是 React 严格模式的特性
       console.log('生成新的魔方状态');
       let newState = updateCubeState(INITIAL_CUBE_STATE, mode);
       
       // 随机应用移动
+      let lastMove = '.';
+      let lastLastMove = '.';
       const appliedMoves: Move[] = [];
       for (let i = 0; i < numMoves; i++) {
-        const randomMove = moves[Math.floor(Math.random() * moves.length)] as Move;
+        const validMoves = moves.filter(move => move[0] !== lastMove[0] && move[0] !== lastLastMove[0]);
+        const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)] as Move;
         appliedMoves.push(randomMove);
         newState = applyMove(newState, randomMove);
+        lastLastMove = lastMove;
+        lastMove = randomMove;
       }
       
       console.log('应用的移动序列:', appliedMoves.join(' '));

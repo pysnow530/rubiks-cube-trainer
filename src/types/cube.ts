@@ -1,4 +1,17 @@
 export type Move = 'U' | 'U\'' | 'D' | 'D\'' | 'L' | 'L\'' | 'R' | 'R\'' | 'F' | 'F\'' | 'B' | 'B\'' | 'U2' | 'D2' | 'L2' | 'R2' | 'F2' | 'B2';
+export const TWO_MOVES: Move[] = ['U2', 'D2', 'L2', 'R2', 'F2', 'B2'];
+
+type TwoMove = 'U2' | 'D2' | 'L2' | 'R2' | 'F2' | 'B2';
+type OneMove = 'U' | 'D' | 'L' | 'R' | 'F' | 'B';
+export const TO_ONE_MOVE: Record<TwoMove, OneMove> = {
+  'U2': 'U',
+  'D2': 'D',
+  'L2': 'L',
+  'R2': 'R',
+  'F2': 'F',
+  'B2': 'B',
+};
+
 export type CubeMode = 'normal' | 'cross';
 
 export interface CubeColors {
