@@ -4,6 +4,7 @@ import { forwardRef, useImperativeHandle, useRef, useState, useEffect, useMemo }
 import { ThreeElements } from '@react-three/fiber';
 import { Move, CubeMode, INITIAL_CUBE_STATE, CubeBlock, CubeState, CUBE_COLORS } from '@/types/cube';
 import { Mesh, Group, BoxGeometry, MeshStandardMaterial, DoubleSide } from 'three';
+import { applyMove } from '@/utils/cubeRotation';
 
 interface RubiksCubeProps {
   mode?: CubeMode;
@@ -88,27 +89,29 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
 
     // 更新魔方状态
     setCubeState((prevState: CubeState) => {
-      const newState = JSON.parse(JSON.stringify(prevState));
-      // 根据移动更新块的位置和颜色
-      // 这里需要实现具体的旋转逻辑
-      return newState;
+      return applyMove(prevState, move);
     });
   };
 
   const scrambleCube = () => {
+    console.log('开始打乱魔方');
     const moves: Move[] = ['U', 'U\'', 'D', 'D\'', 'L', 'L\'', 'R', 'R\'', 'F', 'F\'', 'B', 'B\''];
-    const numMoves = mode === 'cross' ? 4 : 20; // 底层十字模式使用较少的打乱步数
+    const numMoves = mode === 'cross' ? 4 : 20;
     
     setCubeState(() => {
+      // 这个函数在开发模式下会被调用两次，这是 React 严格模式的特性
+      console.log('生成新的魔方状态');
       let newState = updateCubeState(INITIAL_CUBE_STATE, mode);
       
       // 随机应用移动
+      const appliedMoves: Move[] = [];
       for (let i = 0; i < numMoves; i++) {
-        const randomMove = moves[Math.floor(Math.random() * moves.length)];
-        // 应用移动到状态
-        // 这里需要实现具体的旋转逻辑
+        const randomMove = moves[Math.floor(Math.random() * moves.length)] as Move;
+        appliedMoves.push(randomMove);
+        newState = applyMove(newState, randomMove);
       }
       
+      console.log('应用的移动序列:', appliedMoves.join(' '));
       return newState;
     });
   };
