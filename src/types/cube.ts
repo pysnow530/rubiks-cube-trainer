@@ -1,4 +1,4 @@
-export type Move = 'U' | 'U\'' | 'D' | 'D\'' | 'L' | 'L\'' | 'R' | 'R\'' | 'F' | 'F\'' | 'B' | 'B\'';
+export type Move = 'U' | 'U\'' | 'D' | 'D\'' | 'L' | 'L\'' | 'R' | 'R\'' | 'F' | 'F\'' | 'B' | 'B\'' | 'U2' | 'D2' | 'L2' | 'R2' | 'F2' | 'B2';
 export type CubeMode = 'normal' | 'cross';
 
 export interface CubeColors {

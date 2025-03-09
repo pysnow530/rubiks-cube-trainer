@@ -117,13 +117,12 @@ export const applyMove = (state: CubeState, move: Move): CubeState => {
       
       // 更新块的新位置和颜色
       const newBlock = newState.pieces.find(
-        p => p.position[0] === oldBlock.position[0] &&
-            p.position[1] === oldBlock.position[1] &&
-            p.position[2] === oldBlock.position[2]
+        p => p.position[0] === newPosition[0] &&
+            p.position[1] === newPosition[1] &&
+            p.position[2] === newPosition[2]
       );
       
       if (newBlock) {
-        newBlock.position = newPosition;
         newBlock.colors = newColors;
       }
     }

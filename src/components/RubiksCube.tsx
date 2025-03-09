@@ -95,8 +95,10 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
 
   const scrambleCube = () => {
     console.log('开始打乱魔方');
-    const moves: Move[] = ['U', 'U\'', 'D', 'D\'', 'L', 'L\'', 'R', 'R\'', 'F', 'F\'', 'B', 'B\''];
-    const numMoves = mode === 'cross' ? 4 : 20;
+    const moves: Move[] = [
+      'U', 'D', 'L', 'R', 'F', 'B', "U'", "D'", "L'", "R'", "F'", "B'", 'U2', 'D2', 'L2', 'R2', 'F2', 'B2',
+    ];
+    const numMoves = 20;
     
     setCubeState(() => {
       // 这个函数在开发模式下会被调用两次，这是 React 严格模式的特性
