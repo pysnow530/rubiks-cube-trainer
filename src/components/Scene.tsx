@@ -5,7 +5,7 @@ import { OrbitControls } from '@react-three/drei';
 import { RubiksCube } from './RubiksCube';
 import { Controls } from './Controls';
 import { Move } from '@/types/cube';
-import { useRef } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { useCubeStore } from '@/store/cubeStore';
 
 interface SceneProps {
@@ -21,7 +21,14 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
     resetCube: () => void;
   }>(null);
 
-  const { cubeRef: sharedCubeRef } = useCubeStore();
+  const { cubeRef: sharedCubeRef, setCubeRef } = useCubeStore();
+
+  // 使用 useLayoutEffect 确保在 DOM 更新之前设置 ref
+  useLayoutEffect(() => {
+    if (isMain) {
+      setCubeRef(cubeRef);
+    }
+  }, [isMain, setCubeRef]);
 
   const handleMove = (move: Move) => {
     if (isMain) {
