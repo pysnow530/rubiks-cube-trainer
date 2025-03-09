@@ -83,6 +83,11 @@ export const Controls = ({ onMove, onScramble, onReset }: ControlsProps) => {
     setIsRunning(false);
   };
 
+  const handleSolve = () => {
+    console.log('in handleSolve()');
+    // TODO: 实现对魔方求解，给出解法公式
+  };
+
   const formatTime = (ms: number) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
@@ -120,6 +125,12 @@ export const Controls = ({ onMove, onScramble, onReset }: ControlsProps) => {
           className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
         >
           Reset
+        </button>
+        <button
+          onClick={handleSolve}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Solve
         </button>
       </div>
       <div className="text-white text-sm">
