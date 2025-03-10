@@ -1,4 +1,4 @@
-import { Move, CubeState, CubeBlock, CubeColors, TWO_MOVES, TO_ONE_MOVE } from '@/types/cube';
+import { Move, CubeState, CubeBlock, CubeColors, TWO_MOVES, TO_ONE_MOVE, CUBE_COLORS } from '@/types/cube';
 
 // 根据移动类型获取需要旋转的块
 export const getAffectedBlocks = (state: CubeState, move: Move): CubeBlock[] => {
@@ -7,17 +7,17 @@ export const getAffectedBlocks = (state: CubeState, move: Move): CubeBlock[] => 
   
   switch (face) {
     case 'U': // y = 1
-      return pieces.filter(block => block.position[1] === 1);
+      return pieces.filter(block => block.position[1] === 1 && (block.position[0] === 0 || block.position[2] === 0));
     case 'D': // y = -1
-      return pieces.filter(block => block.position[1] === -1);
+      return pieces.filter(block => block.position[1] === -1 && (block.position[0] === 0 || block.position[2] === 0));
     case 'L': // x = -1
-      return pieces.filter(block => block.position[0] === -1);
+      return pieces.filter(block => block.position[0] === -1 && (block.position[1] === 0 || block.position[2] === 0));
     case 'R': // x = 1
-      return pieces.filter(block => block.position[0] === 1);
+      return pieces.filter(block => block.position[0] === 1 && (block.position[1] === 0 || block.position[2] === 0));
     case 'F': // z = 1
-      return pieces.filter(block => block.position[2] === 1);
+      return pieces.filter(block => block.position[2] === 1 && (block.position[0] === 0 || block.position[1] === 0));
     case 'B': // z = -1
-      return pieces.filter(block => block.position[2] === -1);
+      return pieces.filter(block => block.position[2] === -1 && (block.position[0] === 0 || block.position[1] === 0));
     default:
       return [];
   }
@@ -96,6 +96,19 @@ export const rotateColors = (colors: CubeColors, move: Move): CubeColors => {
     default:
       return colors;
   }
+};
+
+// 旋转动作是否会影响到有颜色的面
+export const isAffectingColors = (state: CubeState, move: Move): boolean => {
+  const affectedBlocks = getAffectedBlocks(state, move);
+  return affectedBlocks.some(block =>
+    block.colors.F !== CUBE_COLORS.hidden
+    || block.colors.R !== CUBE_COLORS.hidden
+    || block.colors.B !== CUBE_COLORS.hidden
+    || block.colors.L !== CUBE_COLORS.hidden
+    || block.colors.U !== CUBE_COLORS.hidden
+    || block.colors.D !== CUBE_COLORS.hidden
+  );
 };
 
 // 应用移动到魔方状态

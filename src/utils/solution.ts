@@ -1,6 +1,6 @@
 import {CUBE_COLORS, CubeState} from "@/types/cube";
 import {Move} from "@/types/cube";
-import {applyMove} from "./cubeRotation";
+import {applyMove, isAffectingColors} from "./cubeRotation";
 
 const isSolved = (state: CubeState): boolean => {
     const center = state.pieces.find(block => block.position[0] === 0 && block.position[1] === -1 && block.position[2] === 0);
@@ -67,10 +67,12 @@ export const solveCube = (state: CubeState): string => {
         for (const key of cache.keys()) {
             console.log(`尝试序列前缀：${key}`);
             for (const move of moves) {
+                const newState = applyMove(cache.get(key)!, move);
+
                 if (key.length >= 1 && key[key.length - 1][0] === move[0]) continue; // 跟上次是同个旋转面，直接跳过
                 if (key.length >= 2 && key[key.length - 2][0] === move[0] && isOpposite(key[key.length - 1][0], move[0])) continue; // 跟上次是同个旋转面，直接跳过
+                if (!isAffectingColors(newState, move)) continue; // 旋转面没有颜色
 
-                const newState = applyMove(cache.get(key)!, move);
                 const newKey = key.concat([move]);
                 if (isSolved(newState)) {
                     return newKey.join(' ');
