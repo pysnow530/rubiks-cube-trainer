@@ -44,6 +44,15 @@ const isSolved = (state: CubeState): boolean => {
     }
 };
 
+const isOpposite = (char1: string, char2: string) => {
+    return (char1 === 'L' && char2 === 'R'
+        || char1 === 'R' && char2 === 'L'
+        || char1 === 'U' && char2 === 'D'
+        || char1 === 'D' && char2 === 'U'
+        || char1 === 'F' && char2 === 'B'
+        || char1 === 'B' && char2 === 'F');
+}
+
 export const solveCube = (state: CubeState): string => {
     if (isSolved(state)) return '';
 
@@ -58,6 +67,9 @@ export const solveCube = (state: CubeState): string => {
         for (const key of cache.keys()) {
             console.log(`尝试序列前缀：${key}`);
             for (const move of moves) {
+                if (key.length >= 1 && key[key.length - 1][0] === move[0]) continue; // 跟上次是同个旋转面，直接跳过
+                if (key.length >= 2 && key[key.length - 2][0] === move[0] && isOpposite(key[key.length - 1][0], move[0])) continue; // 跟上次是同个旋转面，直接跳过
+
                 const newState = applyMove(cache.get(key)!, move);
                 const newKey = key.concat([move]);
                 if (isSolved(newState)) {
