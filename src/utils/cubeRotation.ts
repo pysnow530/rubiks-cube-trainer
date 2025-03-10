@@ -7,17 +7,17 @@ export const getAffectedBlocks = (state: CubeState, move: Move): CubeBlock[] => 
   
   switch (face) {
     case 'U': // y = 1
-      return pieces.filter(block => block.position[1] === 1 && (block.position[0] === 0 || block.position[2] === 0));
+      return pieces.filter(block => block.position[1] === 1 && (block.position[0] === 0 || block.position[2] === 0) && !(block.position[0] === 0 && block.position[2] === 0));
     case 'D': // y = -1
-      return pieces.filter(block => block.position[1] === -1 && (block.position[0] === 0 || block.position[2] === 0));
+      return pieces.filter(block => block.position[1] === -1 && (block.position[0] === 0 || block.position[2] === 0) && !(block.position[0] === 0 && block.position[2] === 0));
     case 'L': // x = -1
-      return pieces.filter(block => block.position[0] === -1 && (block.position[1] === 0 || block.position[2] === 0));
+      return pieces.filter(block => block.position[0] === -1 && (block.position[1] === 0 || block.position[2] === 0) && !(block.position[1] === 0 && block.position[2] === 0));
     case 'R': // x = 1
-      return pieces.filter(block => block.position[0] === 1 && (block.position[1] === 0 || block.position[2] === 0));
+      return pieces.filter(block => block.position[0] === 1 && (block.position[1] === 0 || block.position[2] === 0) && !(block.position[1] === 0 && block.position[2] === 0));
     case 'F': // z = 1
-      return pieces.filter(block => block.position[2] === 1 && (block.position[0] === 0 || block.position[1] === 0));
+      return pieces.filter(block => block.position[2] === 1 && (block.position[0] === 0 || block.position[1] === 0) && !(block.position[0] === 0 && block.position[1] === 0));
     case 'B': // z = -1
-      return pieces.filter(block => block.position[2] === -1 && (block.position[0] === 0 || block.position[1] === 0));
+      return pieces.filter(block => block.position[2] === -1 && (block.position[0] === 0 || block.position[1] === 0) && !(block.position[0] === 0 && block.position[1] === 0));
     default:
       return [];
   }
