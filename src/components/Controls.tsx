@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Move } from '@/types/cube';
+import { Move, CubeState } from '@/types/cube';
 
 interface ControlsProps {
   onMove: (move: Move) => void;
   onScramble: () => void;
   onReset: () => void;
+  onSolve: () => void;
 }
 
-export const Controls = ({ onMove, onScramble, onReset }: ControlsProps) => {
+export const Controls = ({ onMove, onScramble, onReset, onSolve }: ControlsProps) => {
   const [isRunning, setIsRunning] = useState(false);
   const [time, setTime] = useState(0);
   const [moveCount, setMoveCount] = useState(0);
@@ -85,7 +86,7 @@ export const Controls = ({ onMove, onScramble, onReset }: ControlsProps) => {
 
   const handleSolve = () => {
     console.log('in handleSolve()');
-    // TODO: 实现对魔方求解，给出解法公式
+    onSolve();
   };
 
   const formatTime = (ms: number) => {

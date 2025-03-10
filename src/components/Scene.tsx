@@ -4,9 +4,10 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { RubiksCube } from './RubiksCube';
 import { Controls } from './Controls';
-import { Move } from '@/types/cube';
+import { CubeState, Move } from '@/types/cube';
 import { useRef, useLayoutEffect } from 'react';
 import { useCubeStore } from '@/store/cubeStore';
+import { solveCube } from '@/utils/solution';
 
 interface SceneProps {
   showControls?: boolean;
@@ -19,6 +20,7 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
     rotatePieces: (move: Move) => void;
     scrambleCube: () => void;
     resetCube: () => void;
+    getState: () => CubeState;
   }>(null);
 
   const { cubeRef: sharedCubeRef, setCubeRef } = useCubeStore();
@@ -54,6 +56,15 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
     }
   };
 
+  const handleSolve = () => {
+    const state = isMain ? cubeRef.current?.getState() : sharedCubeRef?.current?.getState();
+    console.log('current state');
+    console.log(state);
+    const solution = solveCube(state!);
+    console.log('solution');
+    console.log(solution);
+  };
+
   return (
     <div className="relative w-full h-full">
       {showControls && (
@@ -62,6 +73,7 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
             onMove={handleMove}
             onScramble={handleScramble}
             onReset={handleReset}
+            onSolve={handleSolve}
           />
         </div>
       )}

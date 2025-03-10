@@ -99,7 +99,7 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
       'U', 'D', 'L', 'R', 'F', 'B', "U'", "D'", "L'", "R'", "F'", "B'", 'U2', 'D2', 'L2', 'R2', 'F2', 'B2',
     ];
     const numMoves = 20;
-    
+
     setCubeState(() => {
       console.log('生成新的魔方状态');
       let newState = updateCubeState(INITIAL_CUBE_STATE, mode);
@@ -112,9 +112,12 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
         const validMoves = moves.filter(move => move[0] !== lastMove[0] && move[0] !== lastLastMove[0]);
         const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)] as Move;
         appliedMoves.push(randomMove);
-        newState = applyMove(newState, randomMove);
         lastLastMove = lastMove;
         lastMove = randomMove;
+      }
+
+      for (const move of appliedMoves) {
+        newState = applyMove(newState, move);
       }
       
       console.log('应用的移动序列:', appliedMoves.join(' '));
@@ -126,10 +129,15 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
     setCubeState(() => updateCubeState(INITIAL_CUBE_STATE, mode));
   };
 
+  const getState = () => {
+    return cubeState;
+  };
+
   useImperativeHandle(ref, () => ({
     rotatePieces,
     scrambleCube,
     resetCube,
+    getState,
   }));
 
   // 使用 useMemo 缓存材质

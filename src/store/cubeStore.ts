@@ -1,13 +1,14 @@
 'use client';
 
 import { create } from 'zustand';
-import { Move } from '@/types/cube';
+import { CubeState, Move } from '@/types/cube';
 import { MutableRefObject } from 'react';
 
 type CubeRef = {
   rotatePieces: (move: Move) => void;
   scrambleCube: () => void;
   resetCube: () => void;
+  getState: () => CubeState;
 };
 
 interface CubeStore {
