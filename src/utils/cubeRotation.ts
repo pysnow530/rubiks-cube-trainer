@@ -111,6 +111,31 @@ export const isAffectingColors = (state: CubeState, move: Move): boolean => {
   );
 };
 
+const copyState = (state: CubeState): CubeState => {
+  return {
+    pieces: state.pieces.map(block => ({
+      position: [...block.position],
+      colors: { ...block.colors },
+    })),
+  }
+}
+
+export type Stat = {
+    copy: number;
+    getAffectedBlocks: number;
+    findBlocks: number;
+    calcPosition: number;
+    calcColors: number;
+};
+
+export const stat2: Stat = {
+    copy: 0,
+    getAffectedBlocks: 0,
+    findBlocks: 0,
+    calcPosition: 0,
+    calcColors: 0
+};
+
 // 应用移动到魔方状态
 export const applyMove = (state: CubeState, move: Move): CubeState => {
   // 处理 2 系列动作（如 U2, D2 等）
@@ -119,20 +144,29 @@ export const applyMove = (state: CubeState, move: Move): CubeState => {
     return applyMove(applyMove(state, oneMove), oneMove);
   }
 
-  const newState = JSON.parse(JSON.stringify(state)) as CubeState;
+  const timestamp0 = new Date().getTime();
+  const newState = copyState(state);
+  const timestamp1 = new Date().getTime();
   const affectedBlocks = getAffectedBlocks(state, move);
+  const timestamp2 = new Date().getTime();
+  stat2.copy += timestamp1 - timestamp0;
+  stat2.getAffectedBlocks += timestamp2 - timestamp1;
   
   // 更新受影响块的位置和颜色
   affectedBlocks.forEach(block => {
+    const timestamp3 = new Date().getTime();
     const oldBlock = state.pieces.find(
       p => p.position[0] === block.position[0] &&
           p.position[1] === block.position[1] &&
           p.position[2] === block.position[2]
     );
+    const timestamp4 = new Date().getTime();
     
     if (oldBlock) {
       const newPosition = rotatePosition(oldBlock.position, move);
+      const timestamp5 = new Date().getTime();
       const newColors = rotateColors(oldBlock.colors, move);
+      const timestamp6 = new Date().getTime();
       
       // 更新块的新位置和颜色
       const newBlock = newState.pieces.find(
@@ -140,10 +174,14 @@ export const applyMove = (state: CubeState, move: Move): CubeState => {
             p.position[1] === newPosition[1] &&
             p.position[2] === newPosition[2]
       );
+      const timestamp7 = new Date().getTime();
       
       if (newBlock) {
         newBlock.colors = newColors;
       }
+      stat2.calcPosition += timestamp5 - timestamp4;
+      stat2.calcColors += timestamp6 - timestamp5;
+      stat2.findBlocks += timestamp7 - timestamp6 + timestamp4 - timestamp3;
     }
   });
   

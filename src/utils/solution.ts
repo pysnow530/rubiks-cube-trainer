@@ -1,6 +1,6 @@
 import {CUBE_COLORS, CubeState} from "@/types/cube";
 import {Move} from "@/types/cube";
-import {applyMove, isAffectingColors} from "./cubeRotation";
+import {applyMove, isAffectingColors, stat2} from "./cubeRotation";
 
 const isSolved = (state: CubeState): boolean => {
     const center = state.pieces.find(block => block.position[0] === 0 && block.position[1] === -1 && block.position[2] === 0);
@@ -62,16 +62,20 @@ export const solveCube = (state: CubeState): string => {
     let cache = new Map<Move[], CubeState>();
     cache.set([], state);
 
+    const stat = {applyMove: 0, skip: 0, isSolved: 0};
     for (let i = 0; i < 4; i++) {
         const newCache = new Map<Move[], CubeState>();
         for (const key of cache.keys()) {
             console.log(`尝试序列前缀：${key}`);
             for (const move of moves) {
+                const timestamp0 = new Date().getTime();
                 const newState = applyMove(cache.get(key)!, move);
+                const timestamp1 = new Date().getTime();
 
                 if (key.length >= 1 && key[key.length - 1][0] === move[0]) continue; // 跟上次是同个旋转面，直接跳过
                 if (key.length >= 2 && key[key.length - 2][0] === move[0] && isOpposite(key[key.length - 1][0], move[0])) continue; // 跟上次是同个旋转面，直接跳过
                 if (!isAffectingColors(newState, move)) continue; // 旋转面没有颜色
+                const timestamp2 = new Date().getTime();
 
                 const newKey = key.concat([move]);
                 if (isSolved(newState)) {
@@ -79,9 +83,16 @@ export const solveCube = (state: CubeState): string => {
                 } else {
                     newCache.set(newKey, newState);
                 }
+                const timestamp3 = new Date().getTime();
+                stat.applyMove += timestamp1 - timestamp0;
+                stat.skip += timestamp2 - timestamp1;
+                stat.isSolved += timestamp3 - timestamp2;
             }
         }
         cache = newCache;
     }
+    console.log('-------------------');
+    console.log(stat);
+    console.log(stat2);
     return '';
 };
