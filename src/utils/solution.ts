@@ -103,7 +103,7 @@ const rotate = (refs: ColorRef[], n: number) => {
 };
 
 const applyMoveForSolve = (state: CubeStateForSolve, move: Move) => {
-    const newState = copyState2(state);
+  const newState = copyState2(state);
   switch (move) {
     case 'U':
       rotate([[newState.U, 0], [newState.U, 1], [newState.U, 2], [newState.U, 3]], -1);
@@ -111,7 +111,7 @@ const applyMoveForSolve = (state: CubeStateForSolve, move: Move) => {
       break;
     case 'D':
       rotate([[newState.D, 0], [newState.D, 1], [newState.D, 2], [newState.D, 3]], -1);
-      rotate([[newState.F, 2], [newState.L, 2], [newState.B, 2], [newState.R, 2]], -1);
+      rotate([[newState.F, 2], [newState.R, 2], [newState.B, 2], [newState.L, 2]], -1);
       break;
     case 'L':
       rotate([[newState.L, 0], [newState.L, 1], [newState.L, 2], [newState.L, 3]], -1);
@@ -135,7 +135,7 @@ const applyMoveForSolve = (state: CubeStateForSolve, move: Move) => {
       break;
     case 'D2':
       rotate([[newState.D, 0], [newState.D, 1], [newState.D, 2], [newState.D, 3]], -2);
-      rotate([[newState.F, 2], [newState.L, 2], [newState.B, 2], [newState.R, 2]], -2);
+      rotate([[newState.F, 2], [newState.R, 2], [newState.B, 2], [newState.L, 2]], -2);
       break;
     case 'L2':
       rotate([[newState.L, 0], [newState.L, 1], [newState.L, 2], [newState.L, 3]], -2);
@@ -159,7 +159,7 @@ const applyMoveForSolve = (state: CubeStateForSolve, move: Move) => {
       break;
     case "D'":
       rotate([[newState.D, 0], [newState.D, 1], [newState.D, 2], [newState.D, 3]], 1);
-      rotate([[newState.F, 2], [newState.L, 2], [newState.B, 2], [newState.R, 2]], 1);
+      rotate([[newState.F, 2], [newState.R, 2], [newState.B, 2], [newState.L, 2]], 1);
       break;
     case "L'":
       rotate([[newState.L, 0], [newState.L, 1], [newState.L, 2], [newState.L, 3]], 1);
@@ -193,7 +193,7 @@ export const solveCube = (state: CubeState): string => {
   cache.set([], state2);
 
   const stat = {applyMove: 0, skip: 0, isSolved: 0};
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 8; i++) {
     const newCache = new Map<Move[], CubeStateForSolve>();
     for (const key of cache.keys()) {
     //   console.log(`尝试序列前缀：${key}`);
