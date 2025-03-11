@@ -1,53 +1,9 @@
 import {CUBE_COLORS, CubeColors, CubeState} from "@/types/cube";
 import {Move} from "@/types/cube";
-import {applyMove, isAffectingColors, stat2} from "./cubeRotation";
-import { ConvexObjectBreaker } from "three/examples/jsm/Addons.js";
 
 type Face = 'U' | 'D' | 'R' | 'L' | 'F' | 'B';
 type ColorOfFace = 'U' | 'D' | 'R' | 'L' | 'F' | 'B' | ' ';
 type CubeStateForSolve = Record<Face, ColorOfFace[]>;
-
-const isSolved = (state: CubeState): boolean => {
-  const center = state.pieces.find(block => block.position[0] === 0 && block.position[1] === -1 && block.position[2] === 0);
-  const edgeFront = state.pieces.find(block => block.position[0] === 0 && block.position[1] === -1 && block.position[2] === 1);
-  const edgeRight = state.pieces.find(block => block.position[0] === 1 && block.position[1] === -1 && block.position[2] === 0);
-  const edgeBack = state.pieces.find(block => block.position[0] === 0 && block.position[1] === -1 && block.position[2] === -1);
-  const edgeLeft = state.pieces.find(block => block.position[0] === -1 && block.position[1] === -1 && block.position[2] === 0);
-
-  if (center?.colors.D !== CUBE_COLORS.white) {
-    return false;
-  }
-
-  if (edgeFront?.colors.D !== CUBE_COLORS.white) {
-    return false;
-  }
-
-  if (edgeRight?.colors.D !== CUBE_COLORS.white) {
-    return false;
-  }
-
-  if (edgeBack?.colors.D !== CUBE_COLORS.white) {
-    return false;
-  }
-
-  if (edgeLeft?.colors.D !== CUBE_COLORS.white) {
-    return false;
-  }
-
-  const valid = [CUBE_COLORS.green, CUBE_COLORS.red, CUBE_COLORS.blue, CUBE_COLORS.orange];
-  const curr = [edgeFront.colors.F, edgeLeft.colors.L, edgeBack.colors.B, edgeRight.colors.R];
-  if (curr[0] === valid[0] && curr[1] === valid[1] && curr[2] === valid[2] && curr[3] === valid[3]) {
-    return true;
-  } else if (curr[0] === valid[1] && curr[1] === valid[2] && curr[2] === valid[3] && curr[3] === valid[0]) {
-    return true;
-  } else if (curr[0] === valid[2] && curr[1] === valid[3] && curr[2] === valid[0] && curr[3] === valid[1]) {
-    return true;
-  } else if (curr[0] === valid[3] && curr[1] === valid[0] && curr[2] === valid[1] && curr[3] === valid[2]) {
-    return true;
-  } else {
-    return false;
-  }
-};
 
 const isOpposite = (char1: string, char2: string) => {
   return (char1 === 'L' && char2 === 'R'
@@ -114,9 +70,6 @@ const createCubeStateForSolve = (state: CubeState): CubeStateForSolve => {
         colorToFace[positionToColors.get('1_0_-1')!.B],
     ],
   };
-  console.log('==============================');
-  console.log(state);
-  console.log(result);
 
   return result;
 };
@@ -240,19 +193,22 @@ export const solveCube = (state: CubeState): string => {
   cache.set([], state2);
 
   const stat = {applyMove: 0, skip: 0, isSolved: 0};
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     const newCache = new Map<Move[], CubeStateForSolve>();
     for (const key of cache.keys()) {
-      console.log(`尝试序列前缀：${key}`);
+    //   console.log(`尝试序列前缀：${key}`);
       for (const move of moves) {
+        const oldState = cache.get(key)!;
+
+        // 处理旋转面无颜色时跳过
+        if (oldState[move[0] as keyof CubeStateForSolve].every(color => color === ' ')) continue;
+
         const timestamp0 = new Date().getTime();
-        const newState2 = applyMoveForSolve(cache.get(key)!, move);
+        const newState2 = applyMoveForSolve(oldState, move);
         const timestamp1 = new Date().getTime();
 
         if (key.length >= 1 && key[key.length - 1][0] === move[0]) continue; // 跟上次是同个旋转面，直接跳过
         if (key.length >= 2 && key[key.length - 2][0] === move[0] && isOpposite(key[key.length - 1][0], move[0])) continue; // 跟上次是同个旋转面，直接跳过
-        // TODO: 处理旋转面无颜色时跳过
-        // if (!isAffectingColors(newState, move)) continue; // 旋转面没有颜色
         const timestamp2 = new Date().getTime();
 
         const newKey = key.concat([move]);
