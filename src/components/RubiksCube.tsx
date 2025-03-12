@@ -100,22 +100,22 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
     ];
     const numMoves = 20;
 
+    // 随机应用移动
+    let lastMove = '.';
+    let lastLastMove = '.';
+    const appliedMoves: Move[] = [];
+    for (let i = 0; i < numMoves; i++) {
+      const validMoves = moves.filter(move => move[0] !== lastMove[0] && move[0] !== lastLastMove[0]);
+      const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)] as Move;
+      appliedMoves.push(randomMove);
+      lastLastMove = lastMove;
+      lastMove = randomMove;
+    }
+
     setCubeState(() => {
       console.log('生成新的魔方状态');
       let newState = updateCubeState(INITIAL_CUBE_STATE, mode);
       
-      // 随机应用移动
-      let lastMove = '.';
-      let lastLastMove = '.';
-      const appliedMoves: Move[] = [];
-      for (let i = 0; i < numMoves; i++) {
-        const validMoves = moves.filter(move => move[0] !== lastMove[0] && move[0] !== lastLastMove[0]);
-        const randomMove = validMoves[Math.floor(Math.random() * validMoves.length)] as Move;
-        appliedMoves.push(randomMove);
-        lastLastMove = lastMove;
-        lastMove = randomMove;
-      }
-
       for (const move of appliedMoves) {
         newState = applyMove(newState, move);
       }
@@ -123,6 +123,8 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
       console.log('应用的移动序列:', appliedMoves.join(' '));
       return newState;
     });
+
+    return appliedMoves.join(' ');
   };
 
   const resetCube = () => {

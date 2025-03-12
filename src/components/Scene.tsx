@@ -91,7 +91,7 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
           <pointLight position={[-10, -10, -10]} intensity={0.5} />
           <RubiksCube ref={cubeRef} mode="cross" />
           <OrbitControls 
-            enableZoom={true} 
+            enableZoom={false} 
             enablePan={false}
             minPolarAngle={Math.PI / 6}
             maxPolarAngle={Math.PI * 5 / 6}

@@ -116,12 +116,6 @@ export const Controls = ({ onMove, onScramble, onReset, onSolve }: ControlsProps
           {isRunning ? 'Stop Timer' : 'Start Timer'}
         </button>
         <button
-          onClick={handleScramble}
-          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
-        >
-          Scramble
-        </button>
-        <button
           onClick={handleReset}
           className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
         >
