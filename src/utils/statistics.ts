@@ -22,10 +22,9 @@ export const saveStatistics = (stats: Statistics) => {
 
 export const calculateSuccessRate = (attempts: SolveAttempt[], count: number): number => {
   const targetAttempts = [...attempts].slice(-count);
-  // 如果尝试次数不足，用0.5补全
+  if (targetAttempts.length === 0) return 0;
   const correctCount = targetAttempts.filter(a => a.isCorrect).length;
-  const missingCount = count - targetAttempts.length;
-  return ((correctCount + missingCount * 0.5) / count) * 100;
+  return (correctCount / targetAttempts.length) * 100;
 };
 
 export const calculateAverageTime = (attempts: SolveAttempt[], count: number): number => {
@@ -33,6 +32,24 @@ export const calculateAverageTime = (attempts: SolveAttempt[], count: number): n
   if (targetAttempts.length === 0) return 0;
   const totalTime = targetAttempts.reduce((sum, attempt) => sum + attempt.timeSpent, 0);
   return totalTime / targetAttempts.length;
+};
+
+export const getHistoricalData = (attempts: SolveAttempt[], count: number) => {
+  const result = [];
+  const totalPoints = Math.min(count, attempts.length);
+  
+  // 从最早的记录开始，每次增加一条记录，计算最近12次的统计
+  for (let i = 0; i < totalPoints; i++) {
+    const currentAttempts = attempts.slice(0, i + 1);
+    const recentAttempts = currentAttempts.slice(-12); // 只取最近12次
+    
+    result.push({
+      successRate: calculateSuccessRate(recentAttempts, recentAttempts.length),
+      avgTime: calculateAverageTime(recentAttempts, recentAttempts.length)
+    });
+  }
+  
+  return result;
 };
 
 export const updateStatistics = (stats: Statistics): Statistics => {

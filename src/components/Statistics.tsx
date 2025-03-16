@@ -2,7 +2,8 @@
 
 import { SolveAttempt } from '@/types/statistics';
 import type { Statistics as StatisticsType } from '@/types/statistics';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { getHistoricalData } from '@/utils/statistics';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -63,6 +64,10 @@ const options: ChartOptions<'line'> = {
       },
       ticks: {
         color: 'rgba(255, 255, 255, 0.5)',
+        maxRotation: 0,
+        callback: function(value, index) {
+          return `#${index + 1}`;
+        }
       }
     }
   },
@@ -73,6 +78,13 @@ const options: ChartOptions<'line'> = {
         color: 'rgba(255, 255, 255, 0.7)',
       }
     },
+    tooltip: {
+      callbacks: {
+        title: function(context) {
+          return `第 ${Number(context[0].label.replace('#', ''))} 次`;
+        }
+      }
+    }
   },
 };
 
@@ -111,12 +123,16 @@ const AttemptDetail = ({ attempt, onClose }: AttemptDetailProps) => {
 export const Statistics = ({ statistics }: StatisticsProps) => {
   const [selectedAttempt, setSelectedAttempt] = useState<SolveAttempt | null>(null);
 
+  const historicalData = useMemo(() => {
+    return getHistoricalData(statistics.attempts, statistics.attempts.length);
+  }, [statistics.attempts]);
+
   const chartData = {
-    labels: ['正确率', '平均耗时'],
+    labels: historicalData.map((_, i) => `#${i + 1}`),
     datasets: [
       {
         label: '最近12次正确率',
-        data: [statistics.last12Rate, null],
+        data: historicalData.map(d => d.successRate),
         borderColor: 'rgb(75, 192, 192)',
         backgroundColor: 'rgba(75, 192, 192, 0.5)',
         tension: 0.3,
@@ -124,7 +140,7 @@ export const Statistics = ({ statistics }: StatisticsProps) => {
       },
       {
         label: '最近12次平均耗时',
-        data: [null, statistics.last12AvgTime],
+        data: historicalData.map(d => d.avgTime),
         borderColor: 'rgb(255, 159, 64)',
         backgroundColor: 'rgba(255, 159, 64, 0.5)',
         tension: 0.3,
