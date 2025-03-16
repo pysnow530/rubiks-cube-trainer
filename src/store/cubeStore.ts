@@ -6,9 +6,10 @@ import { MutableRefObject } from 'react';
 
 type CubeRef = {
   rotatePieces: (move: Move) => void;
-  scrambleCube: () => void;
+  scrambleCube: () => string;
   resetCube: () => void;
   getState: () => CubeState;
+  getShortestPath: () => string;
 };
 
 interface CubeStore {
