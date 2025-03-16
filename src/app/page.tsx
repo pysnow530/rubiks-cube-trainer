@@ -45,10 +45,6 @@ export default function Home() {
         <div className="w-[61.8vh] h-[61.8vh]">
           <Scene showControls={false} showCube={true} isMain={true} />
         </div>
-        <p>
-          <span className="text-gray-500">打乱公式：</span>
-          <span className="text-green-500 font-mono">{formula}</span>
-        </p>
         
         {formula && !hasGuessed && (
           <div className="mt-4">
@@ -68,7 +64,7 @@ export default function Home() {
         )}
 
         {hasGuessed && (
-          <div className="mt-4 text-center">
+          <div className="mt-4 text-center flex flex-col">
             {isCalculating ? (
               <p className="text-xl text-blue-500">结果校验中...</p>
             ) : (
@@ -76,7 +72,10 @@ export default function Home() {
                 <p className={`text-xl ${userGuess === correctLength ? 'text-green-500' : 'text-red-500'}`}>
                   {userGuess === correctLength ? '答对了！' : '答错了！'}
                 </p>
-                <p className="text-white mt-2">
+                <p className="text-gray-500 mt-2 self-start">
+                  打乱公式：<span className="text-green-500 font-mono">{formula}</span>
+                </p>
+                <p className="text-gray-500 mt-2 self-start">
                   最短路径：<span className="text-green-500 font-mono">{shortestPath}</span>
                   <span className="text-gray-500 ml-2">({correctLength} 步)</span>
                 </p>
