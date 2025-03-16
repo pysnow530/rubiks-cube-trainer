@@ -2,7 +2,10 @@
 
 import { Scene } from '@/components/Scene';
 import { useCubeStore } from '@/store/cubeStore';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Statistics } from '@/components/Statistics';
+import { loadStatistics, saveStatistics, updateStatistics } from '@/utils/statistics';
+import { Statistics as StatisticsType, SolveAttempt } from '@/types/statistics';
 
 export default function Home() {
   const { cubeRef: sharedCubeRef, setCubeRef } = useCubeStore();
@@ -12,6 +15,18 @@ export default function Home() {
   const [userGuess, setUserGuess] = useState<number | null>(null);
   const [correctLength, setCorrectLength] = useState<number | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [statistics, setStatistics] = useState<StatisticsType>({ 
+    attempts: [], 
+    last5Rate: 0, 
+    last12Rate: 0, 
+    last100Rate: 0 
+  });
+  const [startTime, setStartTime] = useState<number>(0);
+
+  useEffect(() => {
+    const stats = loadStatistics();
+    setStatistics(stats);
+  }, []);
 
   const handleScramble = () => {
     const formula = sharedCubeRef?.current?.scrambleCube();
@@ -20,9 +35,13 @@ export default function Home() {
     setHasGuessed(false);
     setUserGuess(null);
     setCorrectLength(null);
+    setStartTime(Date.now());
   };
 
   const handleGuess = async (guess: number) => {
+    const endTime = Date.now();
+    const timeSpent = endTime - startTime;
+    
     setUserGuess(guess);
     setHasGuessed(true);
     setIsCalculating(true);
@@ -30,8 +49,32 @@ export default function Home() {
     // 使用 setTimeout 让 UI 先更新显示"结果校验中"
     setTimeout(() => {
       const solution = sharedCubeRef?.current?.getShortestPath() || '';
+      const solutionLength = solution.split(' ').filter(Boolean).length;
+      
       setShortestPath(solution);
-      setCorrectLength(solution.split(' ').filter(Boolean).length);
+      setCorrectLength(solutionLength);
+      
+      // 更新统计信息
+      const newAttempt: SolveAttempt = {
+        id: statistics.attempts.length + 1,
+        timestamp: endTime,
+        timeSpent,
+        isCorrect: guess === solutionLength,
+        userGuess: guess,
+        actualLength: solutionLength,
+        scrambleFormula: formula,
+        solutionFormula: solution
+      };
+      
+      const newStats = updateStatistics({
+        attempts: [...statistics.attempts, newAttempt],
+        last5Rate: 0,
+        last12Rate: 0,
+        last100Rate: 0
+      });
+      
+      setStatistics(newStats);
+      saveStatistics(newStats);
       setIsCalculating(false);
     }, 0);
   };
@@ -98,6 +141,10 @@ export default function Home() {
             开始练习
           </button>
         )}
+      </div>
+      
+      <div className="absolute top-4 right-4">
+        <Statistics statistics={statistics} />
       </div>
     </div>
   );
