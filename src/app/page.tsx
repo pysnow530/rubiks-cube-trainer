@@ -17,16 +17,29 @@ export default function Home() {
   const [isCalculating, setIsCalculating] = useState(false);
   const [statistics, setStatistics] = useState<StatisticsType>({ 
     attempts: [], 
-    last5Rate: 0, 
-    last12Rate: 0, 
-    last100Rate: 0 
+    last12Rate: 0,
+    last12AvgTime: 0
   });
   const [startTime, setStartTime] = useState<number>(0);
+  const [currentTime, setCurrentTime] = useState<number>(0);
 
   useEffect(() => {
     const stats = loadStatistics();
     setStatistics(stats);
   }, []);
+
+  // 动态计时器
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+    if (startTime > 0 && !hasGuessed) {
+      timer = setInterval(() => {
+        setCurrentTime(Date.now());
+      }, 100); // 每0.1秒更新一次
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [startTime, hasGuessed]);
 
   const handleScramble = () => {
     const formula = sharedCubeRef?.current?.scrambleCube();
@@ -36,6 +49,7 @@ export default function Home() {
     setUserGuess(null);
     setCorrectLength(null);
     setStartTime(Date.now());
+    setCurrentTime(Date.now());
   };
 
   const handleGuess = async (guess: number) => {
@@ -46,7 +60,6 @@ export default function Home() {
     setHasGuessed(true);
     setIsCalculating(true);
     
-    // 使用 setTimeout 让 UI 先更新显示"结果校验中"
     setTimeout(() => {
       const solution = sharedCubeRef?.current?.getShortestPath() || '';
       const solutionLength = solution.split(' ').filter(Boolean).length;
@@ -54,7 +67,6 @@ export default function Home() {
       setShortestPath(solution);
       setCorrectLength(solutionLength);
       
-      // 更新统计信息
       const newAttempt: SolveAttempt = {
         id: statistics.attempts.length + 1,
         timestamp: endTime,
@@ -68,15 +80,18 @@ export default function Home() {
       
       const newStats = updateStatistics({
         attempts: [...statistics.attempts, newAttempt],
-        last5Rate: 0,
         last12Rate: 0,
-        last100Rate: 0
+        last12AvgTime: 0
       });
       
       setStatistics(newStats);
       saveStatistics(newStats);
       setIsCalculating(false);
     }, 0);
+  };
+
+  const formatTime = (ms: number) => {
+    return (ms / 1000).toFixed(1);
   };
 
   return (
@@ -90,7 +105,10 @@ export default function Home() {
         </div>
         
         {formula && !hasGuessed && (
-          <div className="mt-4">
+          <div className="mt-4 text-center">
+            <p className="text-2xl text-blue-500 mb-4">
+              {formatTime(currentTime - startTime)}s
+            </p>
             <p className="text-gray-500 mb-2">请选择最短路径的步数：</p>
             <div className="flex gap-2">
               {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((num) => (

@@ -33,12 +33,26 @@ const options: ChartOptions<'line'> = {
     y: {
       min: 0,
       max: 100,
+      position: 'left',
       grid: {
         color: 'rgba(255, 255, 255, 0.1)',
       },
       ticks: {
         callback: function(value) {
           return `${value}%`;
+        },
+        color: 'rgba(255, 255, 255, 0.5)',
+      }
+    },
+    y1: {
+      min: 0,
+      position: 'right',
+      grid: {
+        drawOnChartArea: false,
+      },
+      ticks: {
+        callback: function(value) {
+          return `${(value as number / 1000).toFixed(1)}s`;
         },
         color: 'rgba(255, 255, 255, 0.5)',
       }
@@ -98,14 +112,23 @@ export const Statistics = ({ statistics }: StatisticsProps) => {
   const [selectedAttempt, setSelectedAttempt] = useState<SolveAttempt | null>(null);
 
   const chartData = {
-    labels: ['最近5次', '最近12次', '最近100次'],
+    labels: ['正确率', '平均耗时'],
     datasets: [
       {
-        label: '正确率',
-        data: [statistics.last5Rate, statistics.last12Rate, statistics.last100Rate],
+        label: '最近12次正确率',
+        data: [statistics.last12Rate, null],
         borderColor: 'rgb(75, 192, 192)',
         backgroundColor: 'rgba(75, 192, 192, 0.5)',
         tension: 0.3,
+        yAxisID: 'y',
+      },
+      {
+        label: '最近12次平均耗时',
+        data: [null, statistics.last12AvgTime],
+        borderColor: 'rgb(255, 159, 64)',
+        backgroundColor: 'rgba(255, 159, 64, 0.5)',
+        tension: 0.3,
+        yAxisID: 'y1',
       }
     ],
   };

@@ -11,7 +11,6 @@ export interface SolveAttempt {
 
 export interface Statistics {
   attempts: SolveAttempt[];
-  last5Rate: number;
   last12Rate: number;
-  last100Rate: number;
+  last12AvgTime: number;
 }
