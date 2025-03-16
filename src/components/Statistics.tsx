@@ -150,7 +150,7 @@ export const Statistics = ({ statistics }: StatisticsProps) => {
   };
 
   return (
-    <div className="w-[300px] bg-gray-800 p-4 rounded-lg">
+    <div className="w-[400px] bg-gray-800 p-4 rounded-lg">
       <h2 className="text-xl text-white mb-4">统计信息</h2>
       
       <div className="h-[200px] mb-6">
