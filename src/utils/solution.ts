@@ -96,8 +96,8 @@ type ColorRef = [ColorOfFace[], number];
 
 const rotate = (refs: ColorRef[], n: number) => {
   const oldColors = refs.map(([colors, idx]) => colors[idx]);
-  for (var i = 0; i < refs.length; i++) {
-    let [colors, idx] = refs[i];
+  for (let i = 0; i < refs.length; i++) {
+    const [colors, idx] = refs[i];
     colors[idx] = oldColors[(i + n + refs.length) % refs.length];
   }
 };

@@ -8,7 +8,7 @@ import { loadStatistics, saveStatistics, updateStatistics } from '@/utils/statis
 import { Statistics as StatisticsType, SolveAttempt } from '@/types/statistics';
 
 export default function Home() {
-  const { cubeRef: sharedCubeRef, setCubeRef } = useCubeStore();
+  const { cubeRef: sharedCubeRef } = useCubeStore();
   const [formula, setFormula] = useState('');
   const [shortestPath, setShortestPath] = useState('');
   const [hasGuessed, setHasGuessed] = useState(false);

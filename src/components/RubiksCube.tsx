@@ -1,9 +1,8 @@
 'use client';
 
 import { forwardRef, useImperativeHandle, useRef, useState, useEffect, useMemo } from 'react';
-import { ThreeElements } from '@react-three/fiber';
 import { Move, CubeMode, INITIAL_CUBE_STATE, CubeBlock, CubeState, CUBE_COLORS } from '@/types/cube';
-import { Mesh, Group, BoxGeometry, MeshStandardMaterial, DoubleSide } from 'three';
+import { Group, MeshStandardMaterial, DoubleSide } from 'three';
 import { applyMove } from '@/utils/cubeRotation';
 import { solveCube } from '@/utils/solution';
 
@@ -69,7 +68,6 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
   const [cubeState, setCubeState] = useState<CubeState>(() => {
     return updateCubeState(INITIAL_CUBE_STATE, mode);
   });
-  const [lastScramble, setLastScramble] = useState<Move[]>([]);
 
   // 监听 mode 变化
   useEffect(() => {
@@ -124,7 +122,6 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
       }
       
       console.log('应用的移动序列:', appliedMoves.join(' '));
-      setLastScramble(appliedMoves);
       return newState;
     });
 
@@ -180,3 +177,5 @@ export const RubiksCube = forwardRef<RubiksCubeRef, RubiksCubeProps>(({ mode = '
     </group>
   );
 });
+
+RubiksCube.displayName = 'RubiksCube';

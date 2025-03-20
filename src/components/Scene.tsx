@@ -4,7 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { RubiksCube } from './RubiksCube';
 import { Controls } from './Controls';
-import { CubeState, Move } from '@/types/cube';
+import { CubeState, Move, CubeRef } from '@/types/cube';
 import { useRef, useLayoutEffect } from 'react';
 import { useCubeStore } from '@/store/cubeStore';
 import { solveCube } from '@/utils/solution';
@@ -16,12 +16,7 @@ interface SceneProps {
 }
 
 export const Scene = ({ showControls = true, showCube = true, isMain = false }: SceneProps) => {
-  const cubeRef = useRef<{
-    rotatePieces: (move: Move) => void;
-    scrambleCube: () => void;
-    resetCube: () => void;
-    getState: () => CubeState;
-  }>(null);
+  const cubeRef = useRef<CubeRef>(null);
 
   const { cubeRef: sharedCubeRef, setCubeRef } = useCubeStore();
 
