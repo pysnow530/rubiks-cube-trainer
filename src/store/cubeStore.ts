@@ -2,9 +2,9 @@
 
 import { create } from 'zustand';
 import { CubeState, Move } from '@/types/cube';
-import { MutableRefObject } from 'react';
+import { RefObject } from 'react';
 
-type CubeRef = {
+export type CubeRef = {
   rotatePieces: (move: Move) => void;
   scrambleCube: () => string;
   resetCube: () => void;
@@ -13,8 +13,8 @@ type CubeRef = {
 };
 
 interface CubeStore {
-  cubeRef: MutableRefObject<CubeRef> | null;
-  setCubeRef: (ref: MutableRefObject<CubeRef>) => void;
+  cubeRef: RefObject<CubeRef | null> | null;
+  setCubeRef: (ref: RefObject<CubeRef | null>) => void;
 }
 
 export const useCubeStore = create<CubeStore>((set) => ({

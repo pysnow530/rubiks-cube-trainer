@@ -4,10 +4,11 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { RubiksCube } from './RubiksCube';
 import { Controls } from './Controls';
-import { CubeState, Move, CubeRef } from '@/types/cube';
+import { Move } from '@/types/cube';
 import { useRef, useLayoutEffect } from 'react';
 import { useCubeStore } from '@/store/cubeStore';
 import { solveCube } from '@/utils/solution';
+import { CubeRef } from '@/store/cubeStore';
 
 interface SceneProps {
   showControls?: boolean;
@@ -28,36 +29,28 @@ export const Scene = ({ showControls = true, showCube = true, isMain = false }: 
   }, [isMain, setCubeRef]);
 
   const handleMove = (move: Move) => {
-    if (isMain) {
-      cubeRef.current?.rotatePieces(move);
-    } else {
-      sharedCubeRef?.current?.rotatePieces(move);
-    }
+    const targetRef = isMain ? cubeRef : sharedCubeRef;
+    targetRef?.current?.rotatePieces(move);
   };
 
   const handleScramble = () => {
-    if (isMain) {
-      cubeRef.current?.scrambleCube();
-    } else {
-      sharedCubeRef?.current?.scrambleCube();
-    }
+    const targetRef = isMain ? cubeRef : sharedCubeRef;
+    targetRef?.current?.scrambleCube();
   };
 
   const handleReset = () => {
-    if (isMain) {
-      cubeRef.current?.resetCube();
-    } else {
-      sharedCubeRef?.current?.resetCube();
-    }
+    const targetRef = isMain ? cubeRef : sharedCubeRef;
+    targetRef?.current?.resetCube();
   };
 
   const handleSolve = () => {
-    const state = isMain ? cubeRef.current?.getState() : sharedCubeRef?.current?.getState();
-    console.log('current state');
-    console.log(state);
-    const solution = solveCube(state!);
-    console.log('solution');
-    console.log(solution);
+    const targetRef = isMain ? cubeRef : sharedCubeRef;
+    const path = targetRef?.current?.getShortestPath();
+    if (path) {
+      path.split(' ').forEach((move) => {
+        handleMove(move as Move);
+      });
+    }
   };
 
   return (
