@@ -99,48 +99,11 @@ export const Controls = ({ onMove, onScramble, onReset, onSolve }: ControlsProps
   };
 
   return (
-    <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm w-64">
-      <div className="text-4xl font-mono mb-2 text-white text-center">
-        {formatTime(time)}
-      </div>
-      <div className="text-white mb-2 text-center">
-        Moves: {moveCount}
-      </div>
-      <div className="grid grid-cols-2 gap-2 mb-4">
-        <button
-          onClick={handleTimerToggle}
-          className={`col-span-2 px-4 py-2 rounded text-white ${
-            isRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
-          }`}
-        >
-          {isRunning ? 'Stop Timer' : 'Start Timer'}
-        </button>
-        <button
-          onClick={handleReset}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Reset
-        </button>
-        <button
-          onClick={handleSolve}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >
-          Solve
-        </button>
-      </div>
+    <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm w-100">
       <div className="text-white text-sm">
-        <h3 className="font-bold mb-1">Controls:</h3>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
-          <div>U/u - Upper</div>
-          <div>D/d - Down</div>
-          <div>L/l - Left</div>
-          <div>R/r - Right</div>
-          <div>F/f - Front</div>
-          <div>B/b - Back</div>
-        </div>
-        <div className="mt-1 text-xs text-white/80">
-          <div>Lowercase - Clockwise</div>
-          <div>Uppercase - Counter-clockwise</div>
+        <h3 className="font-bold mb-1">提示：</h3>
+        <div className="text-sm">
+          <div>1. 连续两次旋转同一面，记为1步，如R2为1步</div>
         </div>
       </div>
     </div>

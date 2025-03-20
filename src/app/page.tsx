@@ -96,10 +96,18 @@ export default function Home() {
 
   return (
     <div className="w-full h-screen bg-gray-900 flex">
-      <div className="absolute top-4 left-4 w-[300px]">
-        <Scene showControls={true} showCube={false} />
+      <div className="absolute bottom-4 left-4 w-[300px]">
+        <div className="bg-white/10 p-4 rounded-lg backdrop-blur-sm w-100">
+          <div className="text-white text-sm">
+            <h3 className="font-bold mb-1">提示：</h3>
+            <div className="text-sm">
+              <div>连续两次旋转同一面，记为1步，如R2为1步</div>
+            </div>
+          </div>
+        </div>
       </div>
       <div className="flex-1 flex flex-col items-center justify-center">
+        <span className="text-white text-2xl font-bold mb-1">十字练习</span>
         <div className="w-[61.8vh] h-[61.8vh]">
           <Scene showControls={false} showCube={true} isMain={true} />
         </div>
