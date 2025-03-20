@@ -7,7 +7,6 @@ import { Controls } from './Controls';
 import { Move } from '@/types/cube';
 import { useRef, useLayoutEffect } from 'react';
 import { useCubeStore } from '@/store/cubeStore';
-import { solveCube } from '@/utils/solution';
 import { CubeRef } from '@/store/cubeStore';
 
 interface SceneProps {
